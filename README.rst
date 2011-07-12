@@ -10,10 +10,10 @@ I required few features from QSRun:
 
 - be simple to tweak (using source code)
 - **complete app names** from $PATH
-- launch apps not only from system $PATH but also from user modified (~/bin etc) - like from xterm (...)
+- launch apps not only from system but also from $PATH modified by user (added ~/bin etc) - (so respects .bash{rc,_profile} like when run from xterm)
 - **NOT** launch non-existant apps (like xf4run opens unknown commands in browser - *hate it*)
 - should remember **history of apps launched by you** and prefer them before others in typing-completion
-- remebered history should be **easy to modify**
+- remembered history should be **easy to modify**
 
 All this is fullfilled at the moment ;)
 And as addition qsrun:
@@ -23,13 +23,13 @@ And as addition qsrun:
 
 Requirements
 -------------------
-Most of them is probably already installed in your linux distribution.
+Most of them are probably already installed in your linux distribution.
 Rest can be (*maybe?*) installed using package manager (aptitude/emerge/pacman...).
 
 * Python_ (~2.6)
 * Working DBus_
 * Qt_
-* dbus_python_
+* dbus-python_
 * PySide_
 
 Usage
@@ -85,7 +85,7 @@ THE SOFTWARE.
 .. _Python: http://www.python.org
 .. _DBus: http://dbus.freedesktop.org
 .. _Qt: http://qt.nokia.com
-.. _dbus_python: http://www.freedesktop.org/wiki/Software/DBusBindings#Python
+.. _dbus-python: http://www.freedesktop.org/wiki/Software/DBusBindings#Python
 .. _PySide: http://www.pyside.org
 .. _JSON: http://json.org/example.html
 .. _Queria Sa-Tas: http://sa-tas.net/
