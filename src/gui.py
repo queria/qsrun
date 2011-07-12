@@ -14,7 +14,7 @@ def resource(resfile):
             resfile)
 
 
-class Completer:
+class AppHinter:
     def __init__(self):
         self._apps = []
         self._history = []
@@ -26,6 +26,7 @@ class Completer:
         self._apps = []
         for d in os.getenv('PATH').split(':'):
             self._apps.extend(os.listdir(os.path.expanduser(d)))
+        self._apps.sort()
 
     def load_history(self):
         self._history = []
@@ -75,7 +76,7 @@ class RunBar(QtGui.QWidget):
     def __init__(self, parent=None):
         super(RunBar, self).__init__(parent)
 
-        self._cmpl = Completer()
+        self._hinter = AppHinter()
 
         self._last_typed = None
 
@@ -86,22 +87,39 @@ class RunBar(QtGui.QWidget):
         l.addWidget(self._line)
         #l.addWidget(self._settings)
 
-        self._line.setCompleter(QtGui.QCompleter(self._cmpl.applications()))
         self._line.textEdited.connect(self._typed)
         self._line.returnPressed.connect(self._confirmed)
 
+        self._completer = QtGui.QCompleter(self._hinter.applications(), self)
+        #self._completer.setModelSorting(QtGui.QCompleter.CaseInsensitivelySortedModel)
+        self._completer.setWidget(self._line)
+        self._completer.highlighted[str].connect(self._completer_highlighted)
+
     def _typed(self, typed):
-        if not typed or typed == self._last_typed:
+        if not typed:
+            self._completer.popup().hide()
+            self._last_typed = typed
+
+        if typed == self._last_typed:
             return
 
         self._last_typed = typed
 
         try:
-            suggestion = self._cmpl.from_history_or_apps( typed )
-            self._line.setText( suggestion )
-            self._line.setSelection(len(typed), len(suggestion) - len(typed))
+            suggestion = self._hinter.from_history_or_apps( typed )
+            self._set_line_string(typed, suggestion)
+            self._completer.setCompletionPrefix(typed)
+            self._completer.complete()
         except KeyError:
             pass
+
+    def _completer_highlighted(self, highlighted):
+        self._set_line_string( self._last_typed, highlighted )
+    
+    def _set_line_string(self, typed, string):
+        self._line.setText( string )
+        self._line.setSelection(len(typed), len(string) - len(typed))
+
 
     def _confirmed(self):
         p = subprocess.Popen(shlex.split(str(self._line.text())), shell=True)
@@ -109,7 +127,7 @@ class RunBar(QtGui.QWidget):
         p.poll()
         print('returncode= '+str(p.returncode))
         if p.returncode != 127:
-            self._cmpl.add_to_history(self._line.text())
+            self._hinter.add_to_history(self._line.text())
             self._line.clear()
             self.confirmed.emit(True)
 
