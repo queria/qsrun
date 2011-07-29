@@ -16,8 +16,6 @@ def resource(resfile):
 
 class RunBar(QtGui.QLineEdit):
 
-    confirmed = QtCore.Signal(bool)
-
     def __init__(self, parent=None):
         super(RunBar, self).__init__(parent)
 
@@ -25,7 +23,7 @@ class RunBar(QtGui.QLineEdit):
 
         self._hinter = AppHinter()
 
-        self._last_typed = None
+        self._last_typed = ''
 
         self.textEdited.connect(self._typed)
         self.returnPressed.connect(self._confirmed)
@@ -47,15 +45,18 @@ class RunBar(QtGui.QLineEdit):
         self.setWindowIcon(self._icon)
 
     def _typed(self, typed):
+        last = self._last_typed
+        self._last_typed = typed
+
         if not typed:
             self._completer.popup().hide()
             self._last_typed = typed
 
-        if typed == self._last_typed:
+        if typed == last:
             return
 
-        self._last_typed = typed
-
+        if last.startswith(typed): # user uses backspace or something like that
+            return
         try:
             suggestion = self._hinter.from_history_or_apps( typed )
             self._set_line_string(typed, suggestion)
@@ -90,7 +91,7 @@ class RunBar(QtGui.QLineEdit):
         if p.returncode != 127:
             self._hinter.add_to_history(self.text())
             self.clear()
-            self.confirmed.emit(True)
+            self.run_confirmed(True)
 
     def event(self, ev):
         if ev.type() == QtCore.QEvent.Type.KeyRelease:
