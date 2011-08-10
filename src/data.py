@@ -8,6 +8,8 @@ class AppHinter:
 
         self.load_applications()
         self.load_history()
+        if '!history' not in self._history:
+            self.add_to_history('!history')
 
     def load_applications(self):
         self._apps = []
@@ -18,7 +20,7 @@ class AppHinter:
     def load_history(self):
         self._history = []
         try:
-            with open(self.__cache__(), 'r') as cache:
+            with open(self.cache(), 'r') as cache:
                 self._history = json.load(cache)
         except (IOError, ValueError):
             pass
@@ -27,13 +29,16 @@ class AppHinter:
         if not executed in self._history:
             self._history.append(executed)
             try:
-                with open(self.__cache__(), 'w') as cache:
+                with open(self.cache(), 'w') as cache:
                     json.dump(self._history, cache)
             except IOError:
                 pass
 
-    def applications(self):
-        return self._apps
+    def available_commands(self):
+        cmds = self._apps[:]
+        cmds.extend(self._history)
+        cmds.sort()
+        return cmds
 
     def from_history_or_apps(self, typed):
         for happ in self._history:
@@ -45,7 +50,7 @@ class AppHinter:
                 return app
         raise KeyError()
     
-    def __cache__(self):
+    def cache(self):
         # depends on OS - currently implemented for Linux
         cachedir = os.path.join(
                 os.path.expanduser('~'),

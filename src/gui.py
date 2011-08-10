@@ -28,7 +28,7 @@ class RunBar(QtGui.QLineEdit):
         self.textEdited.connect(self._typed)
         self.returnPressed.connect(self._confirmed)
 
-        self._completer = QtGui.QCompleter(self._hinter.applications(), self)
+        self._completer = QtGui.QCompleter(self._hinter.available_commands(), self)
         #self._completer.setModelSorting(QtGui.QCompleter.CaseInsensitivelySortedModel)
         self._completer.setWidget(self)
         self._completer.highlighted[str].connect(self._completer_highlighted)
@@ -74,6 +74,12 @@ class RunBar(QtGui.QLineEdit):
 
 
     def _confirmed(self):
+        if self.text() == '!history':
+            p = subprocess.Popen(['gvim',
+                self._hinter.cache()
+                ])
+            QtGui.qApp.exit()
+
         if self.text()[0] == '#':
             print ['xterm', '-e', str(self.text()[1:])]
             p = subprocess.Popen([
