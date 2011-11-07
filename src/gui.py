@@ -5,7 +5,7 @@ import time
 import shlex
 import subprocess
 
-from data import AppHinter
+from data import AppHinter, Calculator
 
 CONF_EDITOR = 'gvim' # no console editors supported yet
 CONF_TERM = 'urxvtc' # has to support "term -e command"
@@ -25,6 +25,7 @@ class RunBar(QtGui.QLineEdit):
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
         self._hinter = AppHinter()
+        self._calculator = Calculator()
 
         self._last_typed = ''
 
@@ -52,6 +53,9 @@ class RunBar(QtGui.QLineEdit):
         self.setWindowIcon(self._icon)
 
     def _typed(self, typed, test_last=True):
+        if typed[0] == '=':
+            self.calculate(typed)
+            return
         last = self._last_typed
         self._last_typed = typed
 
@@ -88,6 +92,9 @@ class RunBar(QtGui.QLineEdit):
         if self.text() == '!reload':
             self.reload()
             return
+
+        if self.text()[0] == '=':
+            return # skip calculation inputs
 
         if self.text()[0] == '#':
             self._launch_term()
@@ -153,6 +160,26 @@ class RunBar(QtGui.QLineEdit):
     def show(self):
         QtGui.QLineEdit.show(self)
         QtGui.qApp.setActiveWindow(self)
+
+    def calculate(self, typed):
+        curpos = self.cursorPosition()
+        result = '?'
+        expr = ''
+        
+        delim = ' => '
+        parts = typed.split(delim)
+        if len(parts) > 1:
+            expr = parts[0][1:]
+            try:
+                result = self._calculator.calc(expr)
+            except SyntaxError:
+                result = '?'
+        else:
+            expr = ' '
+            curpos += 1
+
+        self.setText('=' + expr + delim + str(result))
+        self.setCursorPosition(curpos)
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

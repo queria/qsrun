@@ -1,5 +1,7 @@
 import os
 import json
+import math
+import re
 
 class AppHinter:
     def __init__(self):
@@ -70,4 +72,42 @@ class AppHinter:
         if not os.path.isdir(cachedir):
             os.mkdir(cachedir)
         return os.path.join(cachedir, 'history.json')
+
+
+
+class Calculator:
+    """Thanks to http://www.peterbe.com/plog/calculator-in-python-for-dummies !!!"""
+    
+    def __init__(self):
+
+        self.eval_globals = dict(__builtins__=None)
+        self.eval_symbols = vars(math)
+
+        self.integers_pattern = re.compile(r'\b[\d\.]+\b')
+        self.validator = re.compile('^('+'|'.join(
+            ['-', r'\+', '/', r'\\', r'\*', r'\^', r'\*\*', r'\(', r'\)', '\d+']
+            # functions of math module (ex. __xxx__)
+            + [f for f in dir(math) if f[:2] != '__']) + ')*$')
+
+    def calc(self, expr):
+        expr = expr.replace('^','**')
+        expr = self.integers_pattern.sub(
+            self._whole_number_to_float,
+            expr)
+
+        return self._safe_eval(expr)
+
+    def _validate(self, expr):
+        return self.validator.match(expr) != None
+
+    def _safe_eval(self, expr):
+        return eval( expr,
+            self.eval_globals,
+            self.eval_symbols)
+
+    def _whole_number_to_float(self, int_match):
+        group = int_match.group()
+        if group.find('.') == -1:
+            return group + '.0'
+        return group
 
