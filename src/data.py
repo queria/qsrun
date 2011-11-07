@@ -6,15 +6,23 @@ class AppHinter:
         self._apps = []
         self._history = []
 
+        self.reload()
+        for internal_cmd in ['!history', '!reload']:
+            if internal_cmd not in self._history:
+                self.add_to_history(internal_cmd)
+
+
+    def reload(self):
         self.load_applications()
         self.load_history()
-        if '!history' not in self._history:
-            self.add_to_history('!history')
 
     def load_applications(self):
         self._apps = []
         for d in os.getenv('PATH').split(':'):
-            self._apps.extend(os.listdir(os.path.expanduser(d)))
+            try:
+                self._apps.extend(os.listdir(os.path.expanduser(d)))
+            except OSError:
+                pass
         self._apps.sort()
 
     def load_history(self):
@@ -28,6 +36,7 @@ class AppHinter:
     def add_to_history(self, executed):
         if not executed in self._history:
             self._history.append(executed)
+            self._history.sort()
             try:
                 with open(self.cache(), 'w') as cache:
                     json.dump(self._history, cache)
@@ -36,7 +45,9 @@ class AppHinter:
 
     def available_commands(self):
         cmds = self._apps[:]
-        cmds.extend(self._history)
+        for h in self._history:
+            if not h in cmds:
+                cmds.append(h)
         cmds.sort()
         return cmds
 
