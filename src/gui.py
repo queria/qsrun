@@ -157,6 +157,10 @@ class RunBar(QtGui.QLineEdit):
             return
         self.setVisible( not self.isVisible() )
 
+    def hide(self):
+        QtGui.QLineEdit.hide(self)
+        self.setText('') # clear after hiding
+
     def show(self):
         QtGui.QLineEdit.show(self)
         QtGui.qApp.setActiveWindow(self)
