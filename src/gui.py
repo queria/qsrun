@@ -54,6 +54,7 @@ class RunBar(QtGui.QLineEdit):
 
     def _typed(self, typed, test_last=True):
         if typed[0] == '=':
+            self._completer.popup().hide()
             self.calculate(typed)
             return
         last = self._last_typed
