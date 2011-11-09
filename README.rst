@@ -1,7 +1,7 @@
 QSRun
 =====
 
-QSRun is simple python + qt app for launching other applications.
+QSRun is simple Qt/C++ app for launching other applications.
 It is similiar to other *runners* like xf4run, fbrun and other *Run ...* dialogs.
 
 Motivation/Features
@@ -26,22 +26,26 @@ Requirements
 Most of them are probably already installed in your linux distribution.
 Rest can be (*maybe?*) installed using package manager (aptitude/emerge/pacman...).
 
-* Python_ (~2.6)
 * Working DBus_
 * Qt_
-* dbus-python_
-* PySide_
 
-Usage
+Build
 -------------------
-Launch qsrun/src/main.py.
+For tweaking and modification you can use QtCreator.
+
+For simple usage:
 
 ::
 
   $ cd ~/apps/
   $ git clone ``git@github.com:queria/QSRun.git`` qsrun
-  $ chmod +x qsrun/src/main.py
-  $ qsrun/src/main.py # <- launch
+  $ cd qsrun
+  $ qmake
+  $ make
+  $ ./release/qsrun # <- launch
+
+You can copy ./release/qsrun to (or make symlink) ~/bin/ or some
+other directory which you have in your PATH.
 
 You can add hotkey bindings for example to Alt+F2:
 
@@ -49,12 +53,14 @@ Fluxbox example
 
 ::
 
-  $ grep qsrun ~/.fluxbox/keys
-  Mod1 F2 :Exec ~/apps/qsrun/src/main.py
+  $ echo "Mod1 F2 :Exec ~/apps/qsrun/release/qsrun" >> ~/.fluxbox/keys
 
-In xfce you can use xfce4-keyboard-settings.
+Or yous your Desktop Environment hotkeys configuration utility (in xfce you can use xfce4-keyboard-settings and so on).
 
-History file is located in ``~/.config/qsrun/`` and it uses JSON_ format.
+History file is located in ``~/.cache/qsrun/`` and it uses JSON_ format.
+(Actually Qt/C++ version of qsrun uses only simple parsing of history file,
+so be carefull ... only array/list of string is supported in this file,
+like [ "item1", "item2" ] (newlines are skipped).
 
 Author(s)
 -------------------
@@ -82,11 +88,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-.. _Python: http://www.python.org
-.. _DBus: http://dbus.freedesktop.org
 .. _Qt: http://qt.nokia.com
-.. _dbus-python: http://www.freedesktop.org/wiki/Software/DBusBindings#Python
-.. _PySide: http://www.pyside.org
 .. _JSON: http://json.org/example.html
 .. _Queria Sa-Tas: http://sa-tas.net/
 

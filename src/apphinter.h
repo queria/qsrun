@@ -1,0 +1,34 @@
+#ifndef APPHINTER_H
+#define APPHINTER_H
+
+#include <QObject>
+#include <QStringList>
+
+class AppHinter : public QObject
+{
+    Q_OBJECT
+public:
+    explicit AppHinter(QObject *parent = 0);
+    QStringList availableCommands();
+    QString hint(QString pattern);
+    QString historyPath();
+
+signals:
+
+public slots:
+    void reload();
+    void addToHistory(QString executed);
+
+private:
+    void _loadApplications();
+    void _loadHistory();
+    QStringList _jsonToStringList(QString json);
+    QString _stringListToJson(QStringList list, bool formatted=false);
+
+private:
+    QStringList _apps;
+    QStringList _history;
+    QString _historyPath;
+};
+
+#endif // APPHINTER_H
