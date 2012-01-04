@@ -89,6 +89,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 .. _Qt: http://qt.nokia.com
+.. _DBus: http://dbus.freedesktop.org
 .. _JSON: http://json.org/example.html
 .. _Queria Sa-Tas: http://sa-tas.net/
 
