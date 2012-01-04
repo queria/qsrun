@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="qsrun.png">res/qsrun-tango_system.png</file>
+        <file alias="quit.png">res/quit-tango_stop.png</file>
+        <file alias="history.png">res/history-tango_appointment.png</file>
+        <file alias="reload.png">res/reload-tango_refresh.png</file>
+        <file alias="toggle.png">res/toggle-tango_symlink.png</file>
+    </qresource>
+</RCC>

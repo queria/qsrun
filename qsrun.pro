@@ -12,7 +12,12 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp\
         src/runbar.cpp \
-    src/apphinter.cpp
+    src/apphinter.cpp \
+    src/calculator.cpp
 
 HEADERS  += src/runbar.h \
-    src/apphinter.h
+    src/apphinter.h \
+    src/calculator.h
+
+RESOURCES += \
+    icons.qrc

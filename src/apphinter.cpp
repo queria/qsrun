@@ -11,21 +11,12 @@ AppHinter::AppHinter(QObject *parent) :
     QDir home = QDir::home();
     home.mkpath(".cache/qsrun/");
     _historyPath = home.filePath(".cache/qsrun/historyQt.json");
-
-    reload();
-    if(!_apps.contains("!reload")) {
-        addToHistory("!reload");
-    }
-    if(!_apps.contains("!history")) {
-        addToHistory("!history");
-    }
 }
 
 QStringList AppHinter::availableCommands()
 {
-    QStringList all(_apps);
-    all << _history;
-    all.sort();
+    QStringList all(_history);
+    all << _apps;
     return all;
 }
 
@@ -41,6 +32,11 @@ QString AppHinter::hint(QString pattern)
         return _apps[matching];
     }
     return "";
+}
+
+QString AppHinter::pathForApp(QString appName)
+{
+    return _apps_with_path.value(appName);
 }
 
 QString AppHinter::historyPath()
@@ -72,15 +68,36 @@ void AppHinter::addToHistory(QString executed)
 void AppHinter::_loadApplications()
 {
     _apps.clear();
+    _apps_with_path.clear();
 
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     QStringList appDirectories = env.value("PATH", "").split(":");
+    qDebug() << appDirectories;
     if(appDirectories.empty()) {
         return;
     }
     for(int idx=0; idx < appDirectories.length(); ++idx) {
-        _apps << QDir(appDirectories[idx]).entryList(QDir::Files | QDir::Executable);
+        QString path = _expandHome(appDirectories[idx]);
+        QStringList apps = QDir(path).entryList(
+                    QDir::Files | QDir::Executable
+                    );
+        for(int appIdx=0; appIdx < apps.length(); ++appIdx) {
+            if( !_apps_with_path.contains(apps[appIdx]) ) {
+                _apps_with_path.insert(apps[appIdx], path);
+                _apps << apps[appIdx];
+            }
+        }
     }
+    _apps.sort();
+}
+
+QString AppHinter::_expandHome(QString path)
+{
+    if(path[0] == '~' && path[1] == '/') {
+        return QDir::home().filePath( path.mid(2) );
+    }
+
+    return path;
 }
 
 void AppHinter::_loadHistory()
@@ -93,6 +110,14 @@ void AppHinter::_loadHistory()
     }
     _history = _jsonToStringList(historyFile.readAll());
     historyFile.close();
+
+    if(!_history.contains("!reload")) {
+        addToHistory("!reload");
+    }
+    if(!_history.contains("!history")) {
+        addToHistory("!history");
+    }
+    _history.sort();
 }
 
 QStringList AppHinter::_jsonToStringList(QString json)
