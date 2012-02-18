@@ -201,6 +201,5 @@ void RunBar::confirmed()
     }
     _hinter->addToHistory(appName);
     this->clear();
-    // FIXME: until we support dbus/single-instance-app we have to quit after success
-    qApp->quit();
+    hide();
 }
