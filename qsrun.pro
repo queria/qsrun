@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui dbus
+QT       += core gui dbus script
 
 TARGET = qsrun
 TEMPLATE = app

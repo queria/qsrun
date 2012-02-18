@@ -19,6 +19,8 @@ RunBar::RunBar(QWidget *parent):
     _hinter = new AppHinter();
     _completer = NULL;
 
+    _calculator = new Calculator(this);
+
     _initActions();
     _initTray();
     _initConnections();
