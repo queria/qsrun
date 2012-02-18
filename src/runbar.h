@@ -16,6 +16,7 @@ class RunBar : public QLineEdit
 public:
     RunBar(QWidget *parent = 0);
     ~RunBar();
+    virtual bool event(QEvent *e);
 
 public slots:
     void toggle();

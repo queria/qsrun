@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QProcess>
 #include <QDir>
+#include <QKeyEvent>
 
 #include <QDebug>
 #include <QMessageBox>
@@ -29,6 +30,17 @@ RunBar::RunBar(QWidget *parent):
 RunBar::~RunBar()
 {
 
+}
+
+bool RunBar::event(QEvent *e)
+{
+    if(e->type() == QEvent::KeyRelease) {
+        if(((QKeyEvent*)e)->key() == Qt::Key_Escape) {
+            hide();
+            return true;
+        }
+    }
+    return QLineEdit::event(e);
 }
 
 void RunBar::_methodNA()
