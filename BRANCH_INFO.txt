@@ -1,6 +1,5 @@
-
 Warning:
-	This branch is work in progress (porting from ruby to c++).
+	This branch is work in progress (porting from python to c++).
 	
 	Everything or nothing can work.
 
