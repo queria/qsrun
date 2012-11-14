@@ -74,12 +74,22 @@ void AppHinter::_loadApplications()
 
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     QStringList appDirectories = env.value("PATH", "").split(":");
-    qDebug() << appDirectories;
+    QStringList alreadyDone;
     if(appDirectories.empty()) {
+        qDebug() << "no directories to walk through";
         return;
     }
     for(int idx=0; idx < appDirectories.length(); ++idx) {
         QString path = _expandHome(appDirectories[idx]);
+        if(path.endsWith('/')) {
+            path = path.left(path.size()-1);
+        }
+        if(alreadyDone.contains(path)) {
+            qDebug() << "directory" << path << "already walked before";
+            continue;
+        }
+        qDebug() << "walking through directory" << path;
+        alreadyDone << path;
         QStringList apps = QDir(path).entryList(
                     QDir::Files | QDir::Executable
                     );
