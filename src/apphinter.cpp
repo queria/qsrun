@@ -17,6 +17,8 @@ QStringList AppHinter::availableCommands()
 {
     QStringList all(_history);
     all << _apps;
+    all.sort();
+    all.removeDuplicates();
     return all;
 }
 
