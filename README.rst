@@ -4,6 +4,8 @@ QSRun
 QSRun is simple Qt/C++ app for launching other applications.
 It is similiar to other *runners* like xf4run, fbrun and other *Run ...* dialogs.
 
+**WARNING: QSRun is being ported to C++ (this branch) and there are still some missing features**
+
 Motivation/Features
 -------------------
 I required few features from QSRun:
@@ -38,7 +40,7 @@ For simple usage:
 ::
 
   $ cd ~/apps/
-  $ git clone ``git@github.com:queria/QSRun.git`` qsrun
+  $ git clone 'git@github.com:queria/QSRun.git' qsrun
   $ cd qsrun
   $ qmake
   $ make
@@ -55,11 +57,11 @@ Fluxbox example
 
   $ echo "Mod1 F2 :Exec ~/apps/qsrun/release/qsrun" >> ~/.fluxbox/keys
 
-Or yous your Desktop Environment hotkeys configuration utility (in xfce you can use xfce4-keyboard-settings and so on).
+Or use your Desktop Environment hotkeys configuration utility (in xfce you can use xfce4-keyboard-settings and so on).
 
 History file is located in ``~/.cache/qsrun/`` and it uses JSON_ format.
 (Actually Qt/C++ version of qsrun uses only simple parsing of history file,
-so be carefull ... only array/list of string is supported in this file,
+so be carefull ... only array/list of strings is supported in this file,
 like [ "item1", "item2" ] (newlines are skipped).
 
 Author(s)
