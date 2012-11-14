@@ -52,19 +52,22 @@ void AppHinter::reload()
     _loadHistory();
 }
 
-void AppHinter::addToHistory(QString executed)
+bool AppHinter::addToHistory(QString executed)
 {
     if(_history.contains(executed)) {
-        return;
+        return false;
     }
     _history << executed;
     _history.sort();
     QFile historyFile(historyPath());
     if(!historyFile.open(QFile::WriteOnly)) {
-        return;
+        qWarning() << "unable to write into History File" << historyPath();
+        return false;
     }
     historyFile.write(_stringListToJson(_history, true).toUtf8());
     historyFile.close();
+    qDebug() << "command " << executed << "added to History";
+    return true;
 }
 
 void AppHinter::_loadApplications()

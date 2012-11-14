@@ -19,7 +19,7 @@ signals:
 
 public slots:
     void reload();
-    void addToHistory(QString executed);
+    bool addToHistory(QString executed);
 
 private:
     void _loadApplications();

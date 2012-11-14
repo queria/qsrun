@@ -64,6 +64,12 @@ void RunBar::reload()
 {
     _hinter->reload();
 
+    this->_renewCompleter();
+    this->clear();
+}
+
+void RunBar::_renewCompleter()
+{
     if(_completer) {
         _completer->disconnect(this);
         _completer->deleteLater();
@@ -72,7 +78,6 @@ void RunBar::reload()
     _completer = new QCompleter(_hinter->availableCommands());
     _completer->setWidget(this);
     connect(_completer, SIGNAL(highlighted(QString)), this, SLOT(_completer_highlighted(QString)));
-    this->clear();
 }
 
 void RunBar::_initActions()
@@ -201,7 +206,9 @@ void RunBar::confirmed()
     if( ! QProcess::startDetached(appFullName, QStringList()) ) {
         return;
     }
-    _hinter->addToHistory(appName);
+    if(_hinter->addToHistory(appName)) {
+        this->_renewCompleter();
+    }
     this->clear();
     hide();
 }

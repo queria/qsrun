@@ -36,6 +36,7 @@ private:
     void _initConnections();
     void _setInputString(QString input, QString suggestion);
     void _methodNA();
+    void _renewCompleter();
 
 private:
     QIcon _icon;
