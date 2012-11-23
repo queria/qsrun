@@ -9,6 +9,8 @@
 
 #include "apphinter.h"
 #include "calculator.h"
+#include "settings.h"
+
 class RunBar : public QLineEdit
 {
     Q_OBJECT
@@ -17,6 +19,7 @@ public:
     RunBar(QWidget *parent = 0);
     ~RunBar();
     virtual bool event(QEvent *e);
+    virtual void closeEvent(QCloseEvent *e);
 
 public slots:
     void toggle();
@@ -37,21 +40,25 @@ private:
     void _setInputString(QString input, QString suggestion);
     void _methodNA();
     void _renewCompleter();
+    bool _launchApp(QString path, QStringList args);
 
 private:
     QIcon _icon;
     QSystemTrayIcon *_tray;
     QMenu *_trayMenu;
+    Settings *_settings;
 
     QAction *_toggleAction;
     QAction *_editHistoryAction;
     QAction *_reloadAction;
+    QAction *_showSettingsAction;
 
     QCompleter *_completer;
     AppHinter *_hinter;
     Calculator *_calculator;
 
     QString _lastInput;
+    QStringList _emptyArgs;
 };
 
 #endif // RUNBAR_H

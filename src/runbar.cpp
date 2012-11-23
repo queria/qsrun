@@ -16,6 +16,8 @@ RunBar::RunBar(QWidget *parent):
     setWindowIcon(_icon);
     setWindowTitle(trUtf8("QSRun"));
 
+    _settings = new Settings(_icon, this);
+
     _hinter = new AppHinter();
     _completer = NULL;
 
@@ -36,13 +38,21 @@ RunBar::~RunBar()
 
 bool RunBar::event(QEvent *e)
 {
-    if(e->type() == QEvent::KeyRelease) {
+    if(e->type() == QEvent::KeyPress) {
         if(((QKeyEvent*)e)->key() == Qt::Key_Escape) {
             hide();
             return true;
         }
     }
     return QLineEdit::event(e);
+}
+
+void RunBar::closeEvent(QCloseEvent *e)
+{
+    // we have to quit when window is closed for ourself
+    // because we have quitOnLastWindowClose=false (headless most of the time)
+    qApp->quit();
+    e->accept();
 }
 
 void RunBar::_methodNA()
@@ -57,7 +67,15 @@ void RunBar::toggle()
 
 void RunBar::editHistory()
 {
-    _methodNA();
+    if( _launchApp(
+            _settings->editorPath(),
+            _emptyArgs) ) {
+        qApp->quit();
+    }
+    QMessageBox::warning(this,
+            trUtf8("QSRun - sorry"),
+            trUtf8("Unable to launch specified editor:\n %1\n\nYou can change the path in settings.").arg(
+                _settings->editorPath()));
 }
 
 void RunBar::reload()
@@ -85,8 +103,7 @@ void RunBar::_initActions()
     _toggleAction = new QAction(QIcon(":/icons/toggle.png"),trUtf8("Toggle"), this);
     _editHistoryAction = new QAction(QIcon(":/icons/history.png"), trUtf8("Edit history"), this);
     _reloadAction = new QAction(QIcon(":/icons/reload.png"), trUtf8("Reload App DB"), this);
-
-    _editHistoryAction->setEnabled(false);
+    _showSettingsAction = new QAction(QIcon(":/icons/settings.png"), trUtf8("Settings..."), this);
 }
 
 void RunBar::_initTray()
@@ -98,6 +115,7 @@ void RunBar::_initTray()
     _trayMenu->addAction(_toggleAction);
     _trayMenu->addAction(_reloadAction);
     _trayMenu->addAction(_editHistoryAction);
+    _trayMenu->addAction(_showSettingsAction);
     _trayMenu->addAction(QIcon(":/icons/quit.png"),"Quit", qApp, SLOT(quit()));
     _tray->setContextMenu(_trayMenu);
     _tray->show();
@@ -111,6 +129,7 @@ void RunBar::_initConnections()
     connect(_toggleAction, SIGNAL(triggered()), this, SLOT(toggle()));
     connect(_editHistoryAction, SIGNAL(triggered()), this, SLOT(editHistory()));
     connect(_reloadAction, SIGNAL(triggered()), this, SLOT(reload()));
+    connect(_showSettingsAction, SIGNAL(triggered()), _settings, SLOT(show()));
     connect(_tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(_toggleForTray(QSystemTrayIcon::ActivationReason)));
 }
 
@@ -196,14 +215,18 @@ void RunBar::confirmed()
         return;
     }
 
+    if(appName == "!settings") {
+        _showSettingsAction->trigger();
+        return;
+    }
+
     QString appFullName = appName;
     QString path = _hinter->pathForApp(appName);
     if(!path.isEmpty()) {
         appFullName = QDir::toNativeSeparators(QDir(path).filePath(appName));
     }
 
-    qDebug() << "Should run " << appFullName;
-    if( ! QProcess::startDetached(appFullName, QStringList()) ) {
+    if( ! _launchApp(appFullName, _emptyArgs) ) {
         return;
     }
     if(_hinter->addToHistory(appName)) {
@@ -212,3 +235,10 @@ void RunBar::confirmed()
     this->clear();
     hide();
 }
+
+bool RunBar::_launchApp(QString path, QStringList args)
+{
+    qDebug() << "Should run " << path;
+    return QProcess::startDetached(path, args);
+}
+

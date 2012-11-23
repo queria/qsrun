@@ -132,6 +132,9 @@ void AppHinter::_loadHistory()
     if(!_history.contains("!history")) {
         addToHistory("!history");
     }
+    if(!_history.contains("!settings")) {
+        addToHistory("!settings");
+    }
     _history.sort();
 }
 
