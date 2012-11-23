@@ -41,6 +41,7 @@ private:
     void _methodNA();
     void _renewCompleter();
     bool _launchApp(QString path, QStringList args);
+    void _hideMe();
 
 private:
     QIcon _icon;

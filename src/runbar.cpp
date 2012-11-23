@@ -40,7 +40,7 @@ bool RunBar::event(QEvent *e)
 {
     if(e->type() == QEvent::KeyPress) {
         if(((QKeyEvent*)e)->key() == Qt::Key_Escape) {
-            hide();
+            _hideMe();
             return true;
         }
     }
@@ -83,6 +83,7 @@ void RunBar::reload()
     _hinter->reload();
 
     this->_renewCompleter();
+    _lastInput.clear();
     this->clear();
 }
 
@@ -232,8 +233,16 @@ void RunBar::confirmed()
     if(_hinter->addToHistory(appName)) {
         this->_renewCompleter();
     }
-    this->clear();
+    _hideMe();
+}
+
+void RunBar::_hideMe()
+{
+    _completer->popup()->hide();
     hide();
+
+    _lastInput.clear();
+    clear();
 }
 
 bool RunBar::_launchApp(QString path, QStringList args)
