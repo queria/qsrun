@@ -168,6 +168,9 @@ void RunBar::_typed(QString input, bool testLastInput)
     qDebug() << "Completion prefix:" << input;
     _completer->setCompletionPrefix(input);
     _completer->complete();
+    if(_completer->completionCount() < 2) {
+        _completer->popup()->hide();
+    }
 }
 
 void RunBar::_completer_highlighted(QString selectedRow)
