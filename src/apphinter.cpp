@@ -50,6 +50,7 @@ void AppHinter::reload()
 {
     _loadApplications();
     _loadHistory();
+    emit changed();
 }
 
 bool AppHinter::addToHistory(QString executed)
@@ -100,7 +101,7 @@ void AppHinter::_loadApplications()
             if( !_apps_with_path.contains(apps[appIdx]) ) {
                 _apps_with_path.insert(apps[appIdx], path);
                 _apps << apps[appIdx];
-            }
+            } // else: it was already present in some dir at beggining of PATH
         }
     }
     _apps.sort();

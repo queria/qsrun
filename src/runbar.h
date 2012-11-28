@@ -32,6 +32,7 @@ private slots:
     void _typed(QString input, bool testLastInput=true);
     void _toggleForTray(QSystemTrayIcon::ActivationReason reason);
     void _completer_highlighted(QString selectedRow);
+    void _hinterChanged();
 
 private:
     void _initActions();

@@ -81,7 +81,10 @@ void RunBar::editHistory()
 void RunBar::reload()
 {
     _hinter->reload();
+}
 
+void RunBar::_hinterChanged()
+{
     this->_renewCompleter();
     _lastInput.clear();
     this->clear();
@@ -124,7 +127,7 @@ void RunBar::_initTray()
 
 void RunBar::_initConnections()
 {
-
+    connect(_hinter, SIGNAL(changed()), this, SLOT(_hinterChanged()));
     connect(this, SIGNAL(textEdited(QString)), this, SLOT(_typed(QString)));
     connect(this, SIGNAL(returnPressed()), this, SLOT(confirmed()));
     connect(_toggleAction, SIGNAL(triggered()), this, SLOT(toggle()));

@@ -16,6 +16,7 @@ public:
     QString pathForApp(QString appName);
 
 signals:
+    void changed();
 
 public slots:
     void reload();
