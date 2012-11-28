@@ -4,7 +4,7 @@ QSRun
 QSRun is simple python + qt app for launching other applications.
 It is similiar to other *runners* like xf4run, fbrun and other *Run ...* dialogs.
 
-**WARNING: QSRun is being ported to C++ (see cpp branch) and there are still some missing features. Because of this python branch (master) is not maintained anymore.**
+**WARNING: QSRun was ported to C++. This python branch is not maintained anymore.**
 
 Motivation/Features
 -------------------
