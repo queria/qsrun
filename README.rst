@@ -1,12 +1,10 @@
 QSRun
 =====
 
-QSRun is simple python + qt app for launching other applications.
+QSRun is simple Qt/C++ app for launching other applications.
 It is similiar to other *runners* like xf4run, fbrun and other *Run ...* dialogs.
 
-**WARNING: QSRun is being ported to C++ (see cpp branch) and there are still some missing features. Because of this python branch (master) is not maintained anymore.**
-
-Motivation/Features
+About/Motivation/Features
 -------------------
 I required few features from QSRun:
 
@@ -18,32 +16,40 @@ I required few features from QSRun:
 - remembered history should be **easy to modify**
 
 All this is fullfilled at the moment ;)
-And as addition qsrun:
+And as addition QSRun:
 
 - **hides to tray** after successfull launch of app or after pressing Escape
 - uses dbus to work as **single-instance app**
+- uses inotify to auto-refresh list of available apps
+
+First version of QSRun was written in Python+Qt (PySide), you can get it from old-pyside_ branch.
 
 Requirements
 -------------------
 Most of them are probably already installed in your linux distribution.
 Rest can be (*maybe?*) installed using package manager (aptitude/emerge/pacman...).
 
-* Python_ (~2.6)
 * Working DBus_
 * Qt_
-* dbus-python_
-* PySide_
+* inotify_ enabled (Linux Kernel >= 2.6.13 with CONFIG_INOTIFY)
 
-Usage
+Build
 -------------------
-Launch qsrun/src/main.py.
+For tweaking and modification you can use QtCreator.
+
+For simple usage:
 
 ::
 
   $ cd ~/apps/
-  $ git clone ``git@github.com:queria/QSRun.git`` qsrun
-  $ chmod +x qsrun/src/main.py
-  $ qsrun/src/main.py # <- launch
+  $ git clone 'git@github.com:queria/qsrun.git' qsrun
+  $ cd qsrun
+  $ qmake
+  $ make
+  $ ./build/qsrun # <- launch
+
+You can copy ./build/qsrun to (or make symlink) ~/bin/ or some
+other directory which is in your PATH.
 
 You can add hotkey bindings for example to Alt+F2:
 
@@ -51,12 +57,14 @@ Fluxbox example
 
 ::
 
-  $ grep qsrun ~/.fluxbox/keys
-  Mod1 F2 :Exec ~/apps/qsrun/src/main.py
+  $ echo "Mod1 F2 :Exec ~/apps/qsrun/build/qsrun" >> ~/.fluxbox/keys
 
-In xfce you can use xfce4-keyboard-settings.
+Or use your Desktop Environment hotkeys configuration utility (in xfce you can use xfce4-keyboard-settings and so on).
 
-History file is located in ``~/.config/qsrun/`` and it uses JSON_ format.
+History file is located in ``~/.cache/qsrun/`` and it uses JSON_ format.
+(Actually Qt/C++ version of qsrun uses only simple parsing of history file,
+so be carefull ... only array/list of strings is supported in this file,
+like [ "item1", "item2" ] (newlines are skipped).
 
 Author(s)
 -------------------
@@ -84,11 +92,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-.. _Python: http://www.python.org
-.. _DBus: http://dbus.freedesktop.org
+.. _inotify: http://en.wikipedia.com/wiki/inotify
 .. _Qt: http://qt.nokia.com
-.. _dbus-python: http://www.freedesktop.org/wiki/Software/DBusBindings#Python
-.. _PySide: http://www.pyside.org
+.. _DBus: http://dbus.freedesktop.org
 .. _JSON: http://json.org/example.html
-.. _Queria Sa-Tas: http://sa-tas.net/
+.. _old-pyside: https://github.com/queria/qsrun/tree/old-pyside
+.. _Queria Sa-Tas: https://sa-tas.net/
 

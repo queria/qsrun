@@ -1,1 +1,2 @@
-*.pyc
+qsrun.pro.user*
+/Makefile
