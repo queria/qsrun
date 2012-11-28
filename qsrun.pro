@@ -18,13 +18,15 @@ SOURCES += src/main.cpp\
     src/apphinter.cpp \
     src/calculator.cpp \
     src/dbussingleinstance.cpp \
-    src/settings.cpp
+    src/settings.cpp \
+    src/folderwatch.cpp
 
 HEADERS  += src/runbar.h \
     src/apphinter.h \
     src/calculator.h \
     src/dbussingleinstance.h \
-    src/settings.h
+    src/settings.h \
+    src/folderwatch.h
 
 RESOURCES += \
     icons.qrc
