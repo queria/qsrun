@@ -6,6 +6,7 @@
 #include <QIcon>
 #include <QMenu>
 #include <QSystemTrayIcon>
+#include <QTimer>
 
 #include "apphinter.h"
 #include "calculator.h"
@@ -33,6 +34,7 @@ private slots:
     void _toggleForTray(QSystemTrayIcon::ActivationReason reason);
     void _completer_highlighted(QString selectedRow);
     void _hinterChanged();
+    void _settingsChanged();
 
 private:
     void _initActions();
@@ -58,6 +60,8 @@ private:
     QCompleter *_completer;
     AppHinter *_hinter;
     Calculator *_calculator;
+
+    QTimer _autoRefresh;
 
     QString _lastInput;
     QStringList _emptyArgs;

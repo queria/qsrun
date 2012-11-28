@@ -6,6 +6,7 @@
 #include <QEvent>
 #include <QSettings>
 #include <QLineEdit>
+#include <QSpinBox>
 
 class Settings : public QWidget
 {
@@ -16,6 +17,7 @@ public:
     ~Settings();
     virtual bool event(QEvent *e);
     QString editorPath();
+    int refreshSeconds();
 
 signals:
     void changed();
@@ -33,5 +35,6 @@ private:
 
     QSettings _settings;
     QLineEdit *_editorPath;
+    QSpinBox *_refreshSeconds;
 };
 #endif // SETTINGS_H

@@ -28,7 +28,8 @@ RunBar::RunBar(QWidget *parent):
     _initConnections();
 
     reload();
-
+    _settingsChanged();
+    _autoRefresh.start();
 }
 
 RunBar::~RunBar()
@@ -127,14 +128,16 @@ void RunBar::_initTray()
 
 void RunBar::_initConnections()
 {
-    connect(_hinter, SIGNAL(changed()), this, SLOT(_hinterChanged()));
     connect(this, SIGNAL(textEdited(QString)), this, SLOT(_typed(QString)));
     connect(this, SIGNAL(returnPressed()), this, SLOT(confirmed()));
+    connect(_hinter, SIGNAL(changed()), this, SLOT(_hinterChanged()));
+    connect(_settings, SIGNAL(changed()), this, SLOT(_settingsChanged()));
     connect(_toggleAction, SIGNAL(triggered()), this, SLOT(toggle()));
     connect(_editHistoryAction, SIGNAL(triggered()), this, SLOT(editHistory()));
     connect(_reloadAction, SIGNAL(triggered()), this, SLOT(reload()));
     connect(_showSettingsAction, SIGNAL(triggered()), _settings, SLOT(show()));
     connect(_tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(_toggleForTray(QSystemTrayIcon::ActivationReason)));
+    connect(&_autoRefresh, SIGNAL(timeout()), _hinter, SLOT(reloadIfNeeded()));
 }
 
 void RunBar::_typed(QString input, bool testLastInput)
@@ -260,5 +263,11 @@ bool RunBar::_launchApp(QString path, QStringList args)
 {
     qDebug() << "Should run " << path;
     return QProcess::startDetached(path, args);
+}
+
+void RunBar::_settingsChanged()
+{
+    _autoRefresh.setInterval( _settings->refreshSeconds() * 1000 );
+    qDebug() << "AutoRefresh interval is (msec):" << _autoRefresh.interval();
 }
 
