@@ -14,6 +14,7 @@ public:
     QString hint(QString pattern);
     QString historyPath();
     QString pathForApp(QString appName);
+    QStringList envPath();
 
 signals:
     void changed();

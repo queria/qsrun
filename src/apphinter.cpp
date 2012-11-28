@@ -71,23 +71,34 @@ bool AppHinter::addToHistory(QString executed)
     return true;
 }
 
+QStringList AppHinter::envPath()
+{
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    QStringList appDirectories = env.value("PATH", "").split(":");
+
+    for(int idx=0; idx < appDirectories.length(); ++idx) {
+        QString path = _expandHome(appDirectories[idx]);
+        if(path.endsWith('/')) {
+            path = path.left(path.size()-1);
+        }
+        appDirectories[idx] = path;
+    }
+    return appDirectories;
+}
+
 void AppHinter::_loadApplications()
 {
     _apps.clear();
     _apps_with_path.clear();
 
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QStringList appDirectories = env.value("PATH", "").split(":");
+    QStringList appDirectories = envPath();
     QStringList alreadyDone;
     if(appDirectories.empty()) {
         qDebug() << "no directories to walk through";
         return;
     }
     for(int idx=0; idx < appDirectories.length(); ++idx) {
-        QString path = _expandHome(appDirectories[idx]);
-        if(path.endsWith('/')) {
-            path = path.left(path.size()-1);
-        }
+        QString path = appDirectories[idx];
         if(alreadyDone.contains(path)) {
             qDebug() << "directory" << path << "already walked before";
             continue;
@@ -127,15 +138,9 @@ void AppHinter::_loadHistory()
     _history = _jsonToStringList(historyFile.readAll());
     historyFile.close();
 
-    if(!_history.contains("!reload")) {
-        addToHistory("!reload");
-    }
-    if(!_history.contains("!history")) {
-        addToHistory("!history");
-    }
-    if(!_history.contains("!settings")) {
-        addToHistory("!settings");
-    }
+    addToHistory("!reload");
+    addToHistory("!history");
+    addToHistory("!settings");
     _history.sort();
 }
 
