@@ -69,7 +69,7 @@ void RunBar::editHistory()
 {
     if( _launchApp(
             _settings->editorPath(),
-            _emptyArgs) ) {
+            QStringList(_hinter->historyPath())) ) {
         qApp->quit();
     }
     QMessageBox::warning(this,
