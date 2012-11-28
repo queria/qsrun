@@ -213,6 +213,11 @@ void RunBar::confirmed()
         return;
     }
 
+    if(appName == "!refresh") {
+        clear();
+        _hinter->reloadIfNeeded();
+        return;
+    }
     if(appName == "!reload") {
         _reloadAction->trigger();
         return;

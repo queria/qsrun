@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QHash>
+#include "folderwatch.h"
 
 class AppHinter : public QObject
 {
@@ -21,6 +22,7 @@ signals:
 
 public slots:
     void reload();
+    void reloadIfNeeded();
     bool addToHistory(QString executed);
 
 private:
@@ -35,6 +37,7 @@ private:
     QHash<QString,QString> _apps_with_path;
     QStringList _history;
     QString _historyPath;
+    FolderWatch *_watch;
 };
 
 #endif // APPHINTER_H

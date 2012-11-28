@@ -11,6 +11,9 @@ AppHinter::AppHinter(QObject *parent) :
     QDir home = QDir::home();
     home.mkpath(".cache/qsrun/");
     _historyPath = home.filePath(".cache/qsrun/historyQt.json");
+
+    _watch = new FolderWatch(this);
+    connect(_watch, SIGNAL(somethingChanged()), this, SLOT(reload()));
 }
 
 QStringList AppHinter::availableCommands()
@@ -114,8 +117,14 @@ void AppHinter::_loadApplications()
                 _apps << apps[appIdx];
             } // else: it was already present in some dir at beggining of PATH
         }
+        _watch->observe(path);
     }
     _apps.sort();
+}
+
+void AppHinter::reloadIfNeeded()
+{
+    _watch->processEvents();
 }
 
 QString AppHinter::_expandHome(QString path)
@@ -138,6 +147,7 @@ void AppHinter::_loadHistory()
     _history = _jsonToStringList(historyFile.readAll());
     historyFile.close();
 
+    addToHistory("!refresh");
     addToHistory("!reload");
     addToHistory("!history");
     addToHistory("!settings");
