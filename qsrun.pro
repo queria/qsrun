@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui dbus script
+QT       += core gui dbus script network
 
 # comment this out to get output on cli
 DEFINES += QT_NO_DEBUG_OUTPUT
@@ -16,6 +16,7 @@ TEMPLATE = app
 SOURCES += src/main.cpp\
         src/runbar.cpp \
     src/apphinter.cpp \
+    src/googleconv.cpp \
     src/calculator.cpp \
     src/dbussingleinstance.cpp \
     src/settings.cpp \
@@ -23,6 +24,7 @@ SOURCES += src/main.cpp\
 
 HEADERS  += src/runbar.h \
     src/apphinter.h \
+    src/googleconv.h \
     src/calculator.h \
     src/dbussingleinstance.h \
     src/settings.h \

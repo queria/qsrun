@@ -5,6 +5,8 @@
 #include <QLineEdit>
 #include <QScriptEngine>
 
+#include "googleconv.h"
+
 class Calculator : public QObject
 {
     Q_OBJECT
@@ -18,6 +20,7 @@ public slots:
 
 private:
     QLineEdit *_inputField;
+    GoogleConv _convertor;
     QScriptEngine scriptEngine;
 };
 

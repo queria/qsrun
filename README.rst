@@ -5,7 +5,7 @@ QSRun is simple Qt/C++ app for launching other applications.
 It is similiar to other *runners* like xf4run, fbrun and other *Run ...* dialogs.
 
 About/Motivation/Features
--------------------
+-------------------------
 I required few features from QSRun:
 
 - be simple to tweak (using source code)
@@ -21,6 +21,19 @@ And as addition QSRun:
 - **hides to tray** after successfull launch of app or after pressing Escape
 - uses dbus to work as **single-instance app**
 - uses inotify to auto-refresh list of available apps
+- provides basic 'ECMAScript' calculations/evaluation
+
+  * to start **calculator** mode type equal-sign (**=**), then You can enter your expression
+  * expression will be evaluated using QScriptEngine
+  * You can use most of basic ECMAScript (like JavaScript) expressions like *12/4* or *Math.sqrt(9)*
+  * actually it can process QtScript_
+
+- provides **currency conversion** using `Google's Finance Convert`_
+
+  * to use it, again start *calculator* mode (type **=**) and enter Your request
+  * request can take a form of ``[value_number] [source_currency] in [target_currency]``
+  * for example ``12 eur in usd`` to convert 12 U.S. dollars to Euro
+  * this feature, of course, requires internet connection
 
 First version of QSRun was written in Python+Qt (PySide), you can get it from old-pyside_ branch.
 
@@ -97,5 +110,7 @@ THE SOFTWARE.
 .. _DBus: http://dbus.freedesktop.org
 .. _JSON: http://json.org/example.html
 .. _old-pyside: https://github.com/queria/qsrun/tree/old-pyside
+.. _Google's Finance Convert: http://www.google.com/finance/converter
+.. _QtScript: http://en.wikipedia.org/wiki/QtScript
 .. _Queria Sa-Tas: https://sa-tas.net/
 

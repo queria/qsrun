@@ -22,9 +22,13 @@ void Calculator::calculate(QString typeText)
 
     if(parts.length() > 1) {
         expression = parts[0].mid(1);
-        QScriptValue res = scriptEngine.evaluate(expression);
-        if(res.isValid() && !res.isError() && !res.isUndefined() ) {
-            result = res.toString();
+        if(_convertor.isPattern(expression)) {
+            result = _convertor.convert(expression);
+        } else {
+            QScriptValue res = scriptEngine.evaluate(expression);
+            if(res.isValid() && !res.isError() && !res.isUndefined() ) {
+                result = res.toString();
+            }
         }
     } else {
         expression = " ";
@@ -35,3 +39,4 @@ void Calculator::calculate(QString typeText)
     _inputField->setText("=" + expression + delimiter + result);
     _inputField->setCursorPosition(cursor);
 }
+
