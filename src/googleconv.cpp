@@ -2,7 +2,7 @@
 
 GoogleConv::GoogleConv() :
     _pattern("\\W*([0-9\\.]+)\\W*([a-zA-Z]{3})\\W*in\\W*([a-zA-Z]{3})\\W*"),
-    _responsePattern("rhs:\\W*\"([0-9\\.]+) ([0-9A-Za-z\\.\\ ]+)\"")
+    _responsePattern("rhs: *\"([0-9\\.\uC2A0]+) ([^\"]+)\"")
 {
 }
 
@@ -43,10 +43,11 @@ QString GoogleConv::convert(QString value, QString from, QString to)
         return reply->errorString();
     }
 
-    QString response = reply->readAll();
+    QString response = QString::fromUtf8(reply->readAll());
 
     if( _responsePattern.indexIn(response) != -1 ) {
         QString converted = _responsePattern.cap(1);
+        converted = converted.replace(QRegExp("[^0-9\\.]"), ""); // leave only parsable number (remove No-break space)
         QString currency = _responsePattern.cap(2);
         return QString("%1 %2").arg( converted.toDouble(), 0, 'f', 2 ).arg(currency);
     }
