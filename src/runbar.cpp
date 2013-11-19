@@ -144,6 +144,7 @@ void RunBar::_typed(QString input, bool testLastInput)
 {
     if(input[0] == '=') {
         _completer->popup()->hide();
+        _keepFocus();
         _calculator->calculate(input);
         return;
     }
@@ -151,6 +152,7 @@ void RunBar::_typed(QString input, bool testLastInput)
     if(input.isEmpty()) {
         _completer->popup()->hide();
         _lastInput.clear();
+        _keepFocus();
         return;
     }
 
@@ -176,6 +178,7 @@ void RunBar::_typed(QString input, bool testLastInput)
     _completer->complete();
     if(_completer->completionCount() < 2) {
         _completer->popup()->hide();
+        _keepFocus();
     }
 }
 
@@ -257,6 +260,11 @@ void RunBar::_hideMe()
 
     _lastInput.clear();
     clear();
+}
+
+void RunBar::_keepFocus()
+{
+    this->activateWindow();
 }
 
 bool RunBar::_launchApp(QString path, QStringList args)

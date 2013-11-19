@@ -45,6 +45,7 @@ private:
     void _renewCompleter();
     bool _launchApp(QString path, QStringList args);
     void _hideMe();
+    void _keepFocus();
 
 private:
     QIcon _icon;
