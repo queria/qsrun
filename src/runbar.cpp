@@ -171,7 +171,11 @@ void RunBar::_typed(QString input, bool testLastInput)
 
     QString suggestion = _hinter->hint(input);
     qDebug() << "Hinter replied with:" << suggestion;
-    if(suggestion.isEmpty()) { return; }
+    if(suggestion.isEmpty()) {
+        _completer->popup()->hide();
+        _keepFocus();
+        return;
+    }
     _setInputString(input, suggestion);
     qDebug() << "Completion prefix:" << input;
     _completer->setCompletionPrefix(input);
