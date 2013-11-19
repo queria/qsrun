@@ -159,14 +159,8 @@ void RunBar::_typed(QString input, bool testLastInput)
     QString last = _lastInput;
     _lastInput = input;
 
-    if(testLastInput) {
-        if(input == last) {
-            return;
-        }
-        if(last.startsWith(input)) {
-            // after backspace etc
-            return;
-        }
+    if(testLastInput && input == last) {
+        return;
     }
 
     QString suggestion = _hinter->hint(input);
@@ -176,7 +170,10 @@ void RunBar::_typed(QString input, bool testLastInput)
         _keepFocus();
         return;
     }
-    _setInputString(input, suggestion);
+    if(!testLastInput || !last.startsWith(input)) {
+        // backspace used ... don't overwrite input
+        _setInputString(input, suggestion);
+    }
     qDebug() << "Completion prefix:" << input;
     _completer->setCompletionPrefix(input);
     _completer->complete();
