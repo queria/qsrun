@@ -2,7 +2,7 @@
 
 GoogleConv::GoogleConv() :
     _pattern("\\W*([0-9\\.]+)\\W*([a-zA-Z]{3})\\W*in\\W*([a-zA-Z]{3})\\W*"),
-    _responsePattern("rhs: *\"([0-9\\.\uC2A0]+) ([^\"]+)\"")
+    _responsePattern("<span class=bld>([0-9\\.\uC2A0]+) ([^<]+)</span>")
 {
 }
 
@@ -33,7 +33,7 @@ QString GoogleConv::convert(QString value, QString from, QString to)
     QNetworkReply *reply = _qnam.get(
             QNetworkRequest(
                 QUrl(
-                    QString("http://www.google.com/ig/calculator?hl=en&q=%1%2=?%3") \
+                    QString("http://www.google.com/finance/converter?hl=en&a=%1&from=%2&to=%3") \
                     .arg(value).arg(from).arg(to)
                     )));
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
